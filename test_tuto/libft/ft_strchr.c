@@ -1,28 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ymoukhli <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/08 15:37:28 by ymoukhli          #+#    #+#             */
-/*   Updated: 2019/05/14 16:04:49 by ymoukhli         ###   ########.fr       */
+/*   Created: 2018/10/06 18:13:58 by ymoukhli          #+#    #+#             */
+/*   Updated: 2018/10/15 21:15:35 by ymoukhli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char		*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strchr(const char *s, int c)
 {
 	int		i;
-	char	*s1_2;
+	char	a;
+	char	*v;
 
-	if (!s1 || !s2)
-		return (NULL);
-	i = ft_strlen(s1) + ft_strlen(s2);
-	if (!(s1_2 = (char *)malloc(i + 1)))
-		return (NULL);
-	s1_2 = ft_strcpy(s1_2, s1);
-	s1_2 = ft_strcat(s1_2, s2);
-	return (s1_2);
+	i = 0;
+	a = (char)c;
+	v = (char *)s;
+	while (v[i] != '\0')
+	{
+		if (v[i] == a)
+			return (v + i);
+		i++;
+	}
+	if (v[i] == a)
+		return (v + i);
+	return (0);
 }

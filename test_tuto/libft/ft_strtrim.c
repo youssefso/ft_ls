@@ -1,28 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ymoukhli <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/08 15:37:28 by ymoukhli          #+#    #+#             */
-/*   Updated: 2019/05/14 16:04:49 by ymoukhli         ###   ########.fr       */
+/*   Created: 2018/10/08 16:45:44 by ymoukhli          #+#    #+#             */
+/*   Updated: 2018/10/15 21:15:40 by ymoukhli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char		*ft_strjoin(char const *s1, char const *s2)
+char		*ft_strtrim(char const *s)
 {
 	int		i;
-	char	*s1_2;
+	char	*c;
+	int		j;
 
-	if (!s1 || !s2)
+	if (!s)
 		return (NULL);
-	i = ft_strlen(s1) + ft_strlen(s2);
-	if (!(s1_2 = (char *)malloc(i + 1)))
+	i = 0;
+	j = ft_strlen((char *)s);
+	while (s[i] == ' ' || s[i] == '\n' || s[i] == '\t')
+		i++;
+	if (s[i] == '\0')
+	{
+		if (!(c = (char *)malloc(1)))
+			return (NULL);
+		c[0] = '\0';
+		return (c);
+	}
+	while (s[j - 1] == ' ' || s[j - 1] == '\n' || s[j - 1] == '\t')
+		j--;
+	if (!(c = ft_strsub(s, i, j - i)))
 		return (NULL);
-	s1_2 = ft_strcpy(s1_2, s1);
-	s1_2 = ft_strcat(s1_2, s2);
-	return (s1_2);
+	return (c);
 }

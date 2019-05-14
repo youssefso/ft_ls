@@ -1,28 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_only_one.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ymoukhli <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/08 15:37:28 by ymoukhli          #+#    #+#             */
-/*   Updated: 2019/05/14 16:04:49 by ymoukhli         ###   ########.fr       */
+/*   Created: 2019/05/04 18:58:56 by ymoukhli          #+#    #+#             */
+/*   Updated: 2019/05/04 19:50:10 by ymoukhli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char		*ft_strjoin(char const *s1, char const *s2)
+char	*ft_only_one(char *flag)
 {
-	int		i;
-	char	*s1_2;
+	char *s;
+	int i;
+	int j;
+	int k;
 
-	if (!s1 || !s2)
-		return (NULL);
-	i = ft_strlen(s1) + ft_strlen(s2);
-	if (!(s1_2 = (char *)malloc(i + 1)))
-		return (NULL);
-	s1_2 = ft_strcpy(s1_2, s1);
-	s1_2 = ft_strcat(s1_2, s2);
-	return (s1_2);
+	k = 0;
+	i = 0;
+	s = ft_strnew(ft_strlen(flag));
+	while (flag[i] != '\0')
+	{
+		j = 0;
+		while (j < i)
+		{
+			if (flag[i] == flag[j])
+				break ;
+			j++;
+		}
+		if (j == i)
+			s[k++] = flag[i];
+		i++;
+	}
+	s[k] = '\0';
+	free(flag);
+	return (s);
 }

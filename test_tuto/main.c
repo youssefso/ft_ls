@@ -1,28 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ymoukhli <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/08 15:37:28 by ymoukhli          #+#    #+#             */
-/*   Updated: 2019/05/14 16:04:49 by ymoukhli         ###   ########.fr       */
+/*   Created: 2019/05/14 07:10:05 by ymoukhli          #+#    #+#             */
+/*   Updated: 2019/05/14 07:20:59 by ymoukhli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char		*ft_strjoin(char const *s1, char const *s2)
+void	ft_test(char *str)
 {
-	int		i;
-	char	*s1_2;
+	char *tmp;
 
-	if (!s1 || !s2)
-		return (NULL);
-	i = ft_strlen(s1) + ft_strlen(s2);
-	if (!(s1_2 = (char *)malloc(i + 1)))
-		return (NULL);
-	s1_2 = ft_strcpy(s1_2, s1);
-	s1_2 = ft_strcat(s1_2, s2);
-	return (s1_2);
+	tmp = ft_strjoin(str, "/");
+	free(str);
+	str = ft_strjoin(tmp, "yes");
+	free(tmp);
+	ft_putstr(str);
+}
+int main(int ac, char **av)
+{
+	char *str;
+
+	str = (char *)malloc(ft_strlen(av[1]));
+	str = ft_strcpy(str, av[1]);
+	ft_test(str);
+	return 0;
 }

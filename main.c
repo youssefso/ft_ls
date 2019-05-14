@@ -6,7 +6,7 @@
 /*   By: ymoukhli <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/30 10:34:23 by ymoukhli          #+#    #+#             */
-/*   Updated: 2019/05/14 01:18:27 by ymoukhli         ###   ########.fr       */
+/*   Updated: 2019/05/14 21:11:12 by ymoukhli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,34 +67,24 @@ void	ft_display(t_param *f, char *p, int a)
 {
 	char	*tmp;
 	int		i = 0;
-	if (f == NULL)
+	while (f != NULL)
 	{
-		ft_putstr("ls : ");
-		ft_putstr(ft_sltocu(p, '/'));
-		ft_putstr(": ");
-		perror(NULL);
-	}
-	else
-	{
-		while (f != NULL)
+		if (a == 1)
 		{
-			if (a == 1)
-			{
-				i++;
-				ft_putstr(f->file_name);
-				ft_putstr(" ");
-			}
-			else if (f->file_name[0] != '.')
-			{
-				i++;
-				ft_putstr(f->file_name);
-				ft_putstr(" ");
-			}
-			f = f->next;
+			i++;
+			ft_putstr(f->file_name);
+			ft_putstr(" ");
 		}
-		if (i != 0)
-			ft_putstr("\n");
+		else if (f->file_name[0] != '.')
+		{
+			i++;
+			ft_putstr(f->file_name);
+			ft_putstr(" ");
+		}
+		f = f->next;
 	}
+	if (i != 0)
+		ft_putstr("\n");
 }
 
 void	ft_free_param(t_param *f)
@@ -109,6 +99,70 @@ void	ft_free_param(t_param *f)
 		free(tmp);
 	}
 }
+/////////////////////////LLLLLLLLL//////////////////
+///////////////////////////////////////////////////
+void	ft_print_permission(struct stat buf)
+{
+	char prm[] = "rwxrwxrwx";
+	int	i;
+	char c;
+
+	i = 0;
+	c = (buf.st_mode & (1 << 14)) ? 'd' : '-';
+	ft_putchar(c);
+	while (i < 9)
+	{
+		c = (buf.st_mode & (1 << (8 - i))) ? prm[i] : '-';
+		i++;
+		ft_putchar(c);
+	}
+
+}
+
+void	ft_lll(char *fname, char *pp)
+{
+	struct stat buf;
+	char *tmp = 0;
+	char *p = 0;
+
+	p = ft_strjoin(pp, "/");
+	p = ft_strjoin(p, fname);
+	if (lstat(p, &buf) == -1)
+	{
+		perror(NULL);
+		sleep(6);
+	}
+	printf("%hu\n",buf.st_nlink);
+	ft_print_permission(buf);
+	ft_putstr("  ");
+	ft_putstr(fname);
+	ft_putstr("\n");
+}
+
+void	ft_display_l(t_param *f, char *p, int a)
+{
+	char	*tmp;
+	int		i = 0;
+
+	while (f != NULL)
+	{
+		if (a == 1)
+		{
+			i++;
+			ft_putstr(f->file_name);
+			ft_putstr(" ");
+		}
+		else if (f->file_name[0] != '.')
+		{
+			i++;
+			ft_lll(f->file_name, p);
+		}
+		f = f->next;
+	}
+	if (i != 0)
+		ft_putstr("\n");
+}
+
 void	ft_check_afile(t_param *f, char *p, char *flags, int k)
 {
 	t_param *mini_f;
@@ -116,23 +170,40 @@ void	ft_check_afile(t_param *f, char *p, char *flags, int k)
 	int i;
 	int a;
 
-	ft_ascii_sort(f);
-	if ((ft_strlookup(flags, 't')) == 1)
+	if (f == NULL)
 	{
-		ft_time_sort(f, p);
-		ft_same_time(f);
-	}
-	if ((ft_strlookup(flags, 'r')) == 1)
-		ft_revers_sort(f);
-	i = ft_strlookup(flags, 'R');
-	a = ft_strlookup(flags, 'a');
-	if (k > 1)
-	{
-		ft_putstr(p);
-		ft_putstr(" :");
 		ft_putstr("\n");
+		ft_putstr(p);
+		ft_putstr("\n");
+		ft_putstr("ls: ");
+		ft_putstr(ft_sltocu(p, '/'));
+		ft_putstr(": ");
+		perror(NULL);
 	}
-	ft_display(f, p, a);
+	else
+	{
+		ft_ascii_sort(f);
+		if ((ft_strlookup(flags, 't')) == 1)
+		{
+			ft_time_sort(f, p);
+			ft_same_time(f);
+		}
+		if ((ft_strlookup(flags, 'r')) == 1)
+			ft_revers_sort(f);
+		i = ft_strlookup(flags, 'R');
+		a = ft_strlookup(flags, 'a');
+		if (k > 1)
+		{
+			ft_putstr("\n");
+			ft_putstr(p);
+			ft_putstr(":");
+			ft_putstr("\n");
+		}
+		if ((ft_strlookup(flags, 'l')) == 1)
+			ft_display_l(f, p, a);
+		else
+			ft_display(f, p, a);
+	}
 	while (f != NULL && i == 1)
 	{
 		path = p;
@@ -140,16 +211,17 @@ void	ft_check_afile(t_param *f, char *p, char *flags, int k)
 		{
 			if (a != 0 || f->file_name[0] != '.')
 			{
-			path = ft_strjoin(path, "/");
-			path = ft_strjoin(path, f->file_name);//leak
-			mini_f = ft_open_dir(path, flags);
-			ft_check_afile(mini_f, path, flags, ++k);
+				path = ft_strjoin(path, "/");
+				path = ft_strjoin(path, f->file_name);//leak
+				mini_f = ft_open_dir(path, flags);
+				ft_check_afile(mini_f, path, flags, ++k);
 			}
 		}
 		f = f->next;
 	}
 	ft_free_param(f);
 }
+
 t_param	*ft_open_dir(char *av, char *flags)
 {
 	DIR *dir;
@@ -207,11 +279,11 @@ int main(int ac, char **av)
 	param->file_num = ft_point_on_ffile(ac, av);
 	ft_arg_process(param);
 	/*f = ft_open_dir(av[param->file_num], param->flags);
-	while (f != NULL)
-	{
-		lstat(f->file_name, &b);
-		if (b.st_mode == )
-		printf("file name : %s ** read %hu\n", f->file_name, b.st_mode);
-		f = f->next;
-	}*/
+	  while (f != NULL)
+	  {
+	  lstat(f->file_name, &b);
+	  if (b.st_mode == )
+	  printf("file name : %s ** read %hu\n", f->file_name, b.st_mode);
+	  f = f->next;
+	  }*/
 }
